@@ -1,6 +1,7 @@
 #include "test.h"
+
 Balabala::Balabala() {
-    //do nothing
+    len=0;
 }
 
 void Balabala::GenRandom() {

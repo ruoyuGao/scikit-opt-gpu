@@ -6,11 +6,12 @@
 
 class Balabala{
 public:
-    Balabala();
+    Balabala ();
     void GenRandom();
     void PrintMatrix();
 private:
     Eigen::MatrixXd m;
+    int len;
 };
 
 #endif

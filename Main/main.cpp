@@ -3,7 +3,7 @@
 #include <src/test.h>
 
 int main(int, char**) {
-    Balabala b = Balabala();
+    Balabala b;
     b.GenRandom();
     b.PrintMatrix();
     return 0;
