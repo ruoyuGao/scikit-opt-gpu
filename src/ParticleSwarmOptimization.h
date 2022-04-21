@@ -7,7 +7,7 @@
 template<class T, std::size_t L>
 class ParticalSwarmOptimization: public Optimizer{
 public:
-    explicit ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, T c1=2.5, T c2=0.5, T w=0.5, T tol=1e-5, int MaxIters=150, T delta_t=1, int NumParticles=1e5);
+    ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, T c1=2.5, T c2=0.5, T w=0.5, T tol=1e-5, int MaxIters=150, T delta_t=1, int NumParticles=1e5);
     void run() override;
 private:
     T c1;
