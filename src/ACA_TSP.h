@@ -53,7 +53,7 @@ private:
     MatrixXd Tau; // pheromone matrix for each road, update each iteration.
     MatrixXd Table; // the routine of an ant by current iteration
     RowVectorXd y; // the total distance an ant has gone through by current iteration.
-    MatrixXd generation_best_X, generation_best_Y; // record the best of each iteration TODO
+    MatrixXd generation_best_X, generation_best_Y; // record the best of each iteration
 
     random_device rd;
 };
