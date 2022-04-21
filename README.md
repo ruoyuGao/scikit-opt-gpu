@@ -12,6 +12,6 @@ git clone git@github.com:ruoyuGao/scikit-opt-gpu.git
 cd scikit-opt-gpu
 mkdir build
 cd build
-cmake ..
+cmake -DCMAKE_C_COMPILER=/usr/local/stow/gcc-9.2/bin/gcc -DCMAKE_CXX_COMPILER=/usr/local/stow/gcc-9.2/bin/g++ ..
 make -j4
 ```
