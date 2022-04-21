@@ -6,7 +6,7 @@
 template<class T>
 class ParticalSwarmOptimization: public Optimizer{
 public:
-    ParticalSwarmOptimization(std::function<T(Eigen::VectorXd x)> func, T c1=2.5, T c2=0.5, T w=0.5, T tol=1e-5, int MaxIters=150, T delta_t=1);
+    ParticalSwarmOptimization(std::function<T(Eigen::VectorXd x)> func, T c1=2.5, T c2=0.5, T w=0.5, T tol=1e-5, int MaxIters=150, T delta_t=1, int NumParticles=1e5);
     Eigen::MatrixXd run() override;
 private:
     T c1;
@@ -15,6 +15,7 @@ private:
     T tol;
     int maxIter;
     T dt;
+    int particleNum;
     std::function<T(Eigen::VectorXd)> function;
 };
 
