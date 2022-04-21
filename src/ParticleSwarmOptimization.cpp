@@ -45,12 +45,12 @@ void ParticalSwarmOptimization<T,L>::run(){
 
 template<class T, std::size_t L>
 void ParticalSwarmOptimization<T,L>::_initParticles() {
-    particles = 100. * Eigen::Matrix<T, particleNum, L>::Random(particleNum, L);
+    particles = 100. * Eigen::Matrix<T, Eigen::Dynamic, L>::Random(particleNum, L);
 }
 
 template<class T, std::size_t L>
 void ParticalSwarmOptimization<T, L>::_initVelocity() {
-    v = Eigen::Matrix<T, particleNum, L>::Random();
+    v = Eigen::Matrix<T, Eigen::Dynamic, L>::Random();
 }
 
 template<class T, std::size_t L>
@@ -92,7 +92,7 @@ void ParticalSwarmOptimization<T, L>::findGroupBest() {
 
 template<class T, std::size_t L>
 Eigen::Vector<T, -1> ParticalSwarmOptimization<T, L>::evaluate(Eigen::Matrix<T, Eigen::Dynamic, L> x) {
-    Eigen::Vector<T, particleNum> val;
+    Eigen::Vector<T, Eigen::Dynamic> val;
     for(std::size_t i = 0; i < x.rows(); ++i){
         val(i) = function(x.row(i));
     }

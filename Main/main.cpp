@@ -1,5 +1,6 @@
 #include <iostream>
 #include <src/ParticleSwarmOptimization.h>
+#include <Eigen/Dense>
 
 double fun(Eigen::Vector<double, 3> &x){
     return x.dot(x);
