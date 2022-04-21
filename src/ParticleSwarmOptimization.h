@@ -3,7 +3,6 @@
 
 #include "Optimizer.h"
 
-
 template<typename T, std::size_t L>
 class ParticalSwarmOptimization: public Optimizer{
 public:
@@ -42,3 +41,4 @@ private:
 
 
 #endif /* FA0CCF46_5367_4080_8DBC_A031C2232C93 */
+#include "ParticleSwarmOptimization.tpp"

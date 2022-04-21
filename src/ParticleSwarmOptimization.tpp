@@ -1,5 +1,3 @@
-#include "ParticleSwarmOptimization.h"
-
 
 template<typename T, std::size_t L>
 ParticalSwarmOptimization<T,L>::ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, T c1, T c2, T w, T tol, int MaxIters, T delta_t, int NumParticles):Optimizer(){
@@ -118,3 +116,4 @@ template<typename T, std::size_t L>
 Eigen::Vector<T, L> ParticalSwarmOptimization<T, L>::getOptimal() {
     return optimal;
 }
+
