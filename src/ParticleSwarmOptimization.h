@@ -6,7 +6,7 @@
 template<typename T, std::size_t L>
 class ParticalSwarmOptimization: public Optimizer{
 public:
-    ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles=1e5, int MaxIters=1500, T c1=2.5, T c2=0.5, T w=0.5, T tol=1e-5, T delta_t=1.);
+    ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles=1e5, int MaxIters=1500, T C1=2.5, T C2=0.5, T weight=0.5, T tolerence=1e-10, T delta_t=0.01);
     void run() override;
     Eigen::Vector<T, L> getOptimal();
     T getSol();
@@ -44,12 +44,12 @@ private:
 };
 
 template<typename T, std::size_t L>
-ParticalSwarmOptimization<T,L>::ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles, int MaxIters, T c1, T c2, T w, T tol, T delta_t):Optimizer(){
+ParticalSwarmOptimization<T,L>::ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles, int MaxIters, T C1, T C2, T weight, T tolerence, T delta_t):Optimizer(){
     function = func;
-    c1 = c1;
-    c2 = c2;
-    w = w;
-    tol = tol;
+    c1 = C1;
+    c2 = C2;
+    w = weight;
+    tol = tolerence;
     maxIter = MaxIters;
     dt = delta_t;
     particleNum = NumParticles;
@@ -71,8 +71,10 @@ void ParticalSwarmOptimization<T,L>::run(){
     _updateParticles();
     for (int i = 0; i < maxIter; ++i) {
         _updateCurrentFuncValues();
+        // std::cout << "current_function_values = " <<current_func_values.transpose()<< std::endl;
         tmpSol = current_func_values.minCoeff(&minId);
-        if(std::abs(sol - tmpSol) < tol){
+        T diff = std::abs(sol - tmpSol);
+        if(diff < tol){
             sol = tmpSol;
             optimal = particles.row(minId);
             break;
@@ -82,8 +84,18 @@ void ParticalSwarmOptimization<T,L>::run(){
             optimal = particles.row(minId);
         }
         _updateVelocity();
+        // std::cout << "v = " << std::endl;
+        // std::cout << v << std::endl;
         _updateParticles();
-        std::cout << "Iter" << i << ": minFuncVal=" << sol << " x=" << optimal << std::endl;
+        // std::cout << "particles = " << std::endl;
+        // std::cout << particles << std::endl;
+        findPersonalBest();
+        // std::cout << "personal best = " << std::endl;
+        // std::cout << personal_best << std::endl;
+        findGroupBest();
+        // std::cout << "group best = " << std::endl;
+        // std::cout << group_best << std::endl;
+        std::cout << "Iter" << i << ": minFuncVal=" << sol << " x= [" << optimal.transpose()<<"]" <<" delta_f=" <<diff<< " ||V||=" <<v.squaredNorm() << std::endl;
     }
     sol = tmpSol;
     optimal = particles.row(minId);
@@ -104,37 +116,30 @@ template<typename T, std::size_t L>
 void ParticalSwarmOptimization<T, L>::_updateVelocity() {
     T r1 = _randGen();
     T r2 = _randGen();
-    // std::cout << personal_best.rows() << personal_best.cols() << std::endl;
-    // std::cout << particles.rows() << particles.cols() << std::endl;
-    // std::cout << group_best.rows() << group_best.cols() << std::endl;
-
-    v = w * v + c1 * r1 * (personal_best-particles)/dt+c2 * r2 *(group_best - particles)/dt;
+    v = w * v + c1 * r1 * (personal_best-particles)/dt + c2 * r2 *(group_best - particles)/dt;
 }
 
 template<typename T, std::size_t L>
 void ParticalSwarmOptimization<T, L>::_updateParticles() {
-    std::cout << "dt = "<<dt<< " v * dt = " << v * dt << std::endl;
     particles = particles + v * dt;
-    std::cout << "difference = \n";
-    auto diff = particles - old_particles;
-    std::cout << diff.array().abs() << std::endl;
-    old_particles = particles;
+    // auto diff = particles - old_particles;
+    // old_particles = particles;
 }
 
 template<typename T, std::size_t L>
 T ParticalSwarmOptimization<T, L>::_randGen() {
-    std::default_random_engine generator;
+    std::random_device rd;
+    std::default_random_engine eng(rd());
     std::uniform_real_distribution<T> distribution(0, 1);
-    auto dice = std::bind(distribution, generator);
-    T roll = dice();
-    return roll;
+    return distribution(eng);
 }
 
 template<typename T, std::size_t L>
 void ParticalSwarmOptimization<T, L>::findPersonalBest() {
-    for(std::size_t i = 0; i < particles.rows(); ++i){
+    for(std::size_t i = 0; i < current_func_values.size(); ++i){
         if(current_func_values(i) < personal_best_func_values(i)){
             personal_best.row(i) = particles.row(i);
+            personal_best_func_values(i) = current_func_values(i);
         }
     }
 }
@@ -144,6 +149,7 @@ void ParticalSwarmOptimization<T, L>::findGroupBest() {
     Eigen::Index minId;
     current_func_values.minCoeff(&minId);
     group_best.rowwise() = particles.row(minId);
+    
 }
 
 template<typename T, std::size_t L>
