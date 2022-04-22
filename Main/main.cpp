@@ -14,5 +14,6 @@ int main(int, char**) {
     b.PrintMatrix();
     ParticalSwarmOptimization<double, 3> PSO(&fun);
     PSO.run();
+    std::cout << "best sol = " << PSO.getSol() << " optima = [" << PSO.getOptimal().transpose() << "]" << std::endl;
     return 0;
 }

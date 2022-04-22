@@ -15,6 +15,7 @@ ParticalSwarmOptimization<T,L>::ParticalSwarmOptimization(std::function<T(Eigen:
     personal_best_func_values = evaluate();
     Eigen::Index minId;
     personal_best_func_values.minCoeff(&minId);
+    group_best = particles;
     group_best.rowwise() = personal_best.row(minId);
     sol = personal_best_func_values.minCoeff();
 }
@@ -25,7 +26,7 @@ void ParticalSwarmOptimization<T,L>::run(){
     T tmpSol;
     for (int i = 0; i < maxIter; ++i) {
         _updateCurrentFuncValues();
-        tmpSol = current_func_values.minCoeff(minId);
+        tmpSol = current_func_values.minCoeff(&minId);
         if(std::abs(sol - tmpSol) < tol){
             sol = tmpSol;
             optimal = particles.row(minId);
@@ -33,9 +34,11 @@ void ParticalSwarmOptimization<T,L>::run(){
         }
         if(tmpSol<sol) {
             sol = tmpSol;
+            optimal = particles.row(minId);
         }
         _updateVelocity();
         _updateParticles();
+        std::cout << "Iter" << i << ": minFuncVal=" << sol << " x=" << optimal << std::endl; 
     }
     sol = tmpSol;
     optimal = particles.row(minId);
@@ -48,13 +51,17 @@ void ParticalSwarmOptimization<T,L>::_initParticles() {
 
 template<typename T, std::size_t L>
 void ParticalSwarmOptimization<T, L>::_initVelocity() {
-    v = Eigen::Matrix<T, Eigen::Dynamic, L>::Random();
+    v = Eigen::Matrix<T, Eigen::Dynamic, L>::Random(particleNum, L);
 }
 
 template<typename T, std::size_t L>
 void ParticalSwarmOptimization<T, L>::_updateVelocity() {
     T r1 = _randGen();
     T r2 = _randGen();
+    // std::cout << personal_best.rows() << personal_best.cols() << std::endl;
+    // std::cout << particles.rows() << particles.cols() << std::endl;
+    // std::cout << group_best.rows() << group_best.cols() << std::endl;
+
     v = w * v + c1 * r1 * (personal_best-particles)/dt+c2 * r2 *(group_best - particles)/dt;
 }
 
@@ -66,7 +73,7 @@ void ParticalSwarmOptimization<T, L>::_updateParticles() {
 template<typename T, std::size_t L>
 T ParticalSwarmOptimization<T, L>::_randGen() {
     std::default_random_engine generator;
-    std::uniform_int_distribution<T> distribution(1, 6);
+    std::uniform_real_distribution<T> distribution(0, 1);
     auto dice = std::bind(distribution, generator);
     T roll = dice();
     return roll;
@@ -90,9 +97,10 @@ void ParticalSwarmOptimization<T, L>::findGroupBest() {
 
 template<typename T, std::size_t L>
 Eigen::Vector<T, -1> ParticalSwarmOptimization<T, L>::evaluate(Eigen::Matrix<T, Eigen::Dynamic, L> x) {
-    Eigen::Vector<T, Eigen::Dynamic> val;
+    Eigen::Vector<T, Eigen::Dynamic> val(particleNum);
     for(std::size_t i = 0; i < x.rows(); ++i){
-        val(i) = function(x.row(i));
+        Eigen::Vector<T, L> xi = x.row(i);
+        val(i) = function(xi);
     }
     return val;
 }
