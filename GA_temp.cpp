@@ -6,7 +6,15 @@
 #include"Dense"
 
 using namespace std;
+using namespace Eigen;
 
+class test{
+    public:
+        ArrayXf h;
+        test(int a, int b){
+            h = ArrayXf::Constant(a,b);
+        }
+};
 class GeneticAlgorithmBase{
     public:
         //self.func = func_tramsformer(func)
@@ -70,7 +78,7 @@ class GeneticAlgorithmBase{
                 selection();
                 crossover();
                 mutation();
-                if(early_stop){
+                if(early_stop!=0){
                     best.push_back(*min_element(generation_best_Y.begin(),generation_best_Y.end()));
                     if(best.size()>=early_stop){
                         int min_best =  *min_element(best.begin(),best.end());
@@ -95,13 +103,25 @@ class GeneticAlgorithmBase{
 
 class GA: public GeneticAlgorithmBase{
     public:
-        vector<int> lb; //
-        GA(int size_pop = 50, int max_iter = 200, ):GeneticAlgorithmBase(){
+        ArrayXf lb; // the lower bound of every variables of func
+        ArrayXf ub; // the upper bound of every variables of func
+        ArrayXf precision;
+        ArrayXf Lind;
+        GA(int size_pop = 50, int max_iter = 200, int lb_number=-1, int n_dim=1,
+        int ub_number = 1, float precision = 1e-7, int early_stop = 0): GeneticAlgorithmBase(){
             this->size_pop =  size_pop;
             this->max_iter = max_iter;
+            this->n_dim = n_dim;
+            lb = ArrayXf::Constant(n_dim,lb_number);
+            ub = ArrayXf::Constant(n_dim, lb_number);
+            this->precision = ArrayXf::Constant(n_dim, precision);
+            ArrayXf Coefficient = ArrayXf::Ones(n_dim).log2();
+            ArrayXf Lind_raw = Coefficient*(ub-lb)/(this->precision);
         }
 };
 int main()
 {
   cout<<"hello"<<endl;
+  test a(12,3);
+  cout<<a.h(0)<<endl;
 }
