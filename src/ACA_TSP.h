@@ -31,7 +31,7 @@ double cal_total_distance(RowVectorXd &routine, MatrixXd &distance_matrix) {
 
 class ACA_TSP {
 public:
-    ACA_TSP(function<double(RowVectorXd, MatrixXd)> func,
+    ACA_TSP(function<double(RowVectorXd , MatrixXd )> func,
             int n_dim,
             int size_pop,
             int max_iter,
@@ -44,7 +44,7 @@ public:
 
 private:
     MatrixXd distance_matrix;
-    function<double(RowVectorXd, MatrixXd)> func; // the function to calculate total distance
+    function<double(RowVectorXd , MatrixXd )> func; // the function to calculate total distance
     int n_dim; //the number of cities
     int size_pop; //the number of ants
     int max_iter; //the limit of iterations

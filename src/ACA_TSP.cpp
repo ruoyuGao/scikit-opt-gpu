@@ -4,7 +4,7 @@
 
 #include "ACA_TSP.h"
 
-ACA_TSP::ACA_TSP(function<double(RowVectorXd,MatrixXd)> func,
+ACA_TSP::ACA_TSP(function<double(RowVectorXd , MatrixXd )> func,
                  int n_dim,
                  int size_pop,
                  int max_iter,
@@ -86,7 +86,8 @@ pair<RowVectorXd, RowVectorXd> ACA_TSP::run(int max_iteration) {
         // calculate the total_distance for each ant
         this->y = RowVectorXd(1, this->size_pop);
         for (int indx = 0; indx < this->size_pop; indx++) {
-            y(indx) = this->func(this->Table.row(indx), this->distance_matrix);
+            VectorXd this_routine = this->Table.row(indx);
+            y(indx) = this->func(this_routine, this->distance_matrix);
         }
 
         // store the best routine for each iteration.
