@@ -1,7 +1,6 @@
 #include <iostream>
 #include <src/ParticleSwarmOptimization.h>
 #include <Eigen/Dense>
-#include <src/test.h>
 
 
 double fun(Eigen::Vector<double, 3> &x){

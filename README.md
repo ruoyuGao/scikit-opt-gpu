@@ -5,6 +5,8 @@
 ```
 module load gcc-9.2
 module load git-2.6.3
+module load cmake-3
+module load cuda-11.4
 ```
 2. Clone this repo and build it
 ```
