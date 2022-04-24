@@ -33,6 +33,7 @@ class GA{
         void get_fitness();
         float get_fitness(vector<float> indival);
         float get_random(float low, float up);
+        int get_rand(int up);
         void mutation();
         void run();
         GA(function<float(vector<float>)> func,int pop_size, int n_dim,vector<float>& in_lb, vector<float>&in_ub,
@@ -50,18 +51,28 @@ GA::GA(function<float(vector<float>)> func, int pop_size, int n_dim,vector<float
     this->mutate_prob = mutate_prob;
     this->iteration = iter;
 }
+
 void GA::get_fitness(){
     for(int i=0;i<pop_size;i++){
         fitness[i] = this->func(X[i]);
     }
 }
+
 float GA::get_fitness(vector<float> indival){
     return this->func(indival);
 }
+
 float GA:: get_random(float low, float up){
     std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
     std::mt19937_64 eng(rd());
     uniform_real_distribution<float>distr(low,up);
+    return distr(eng);
+}
+
+int GA::get_rand(int up){
+    std::random_device rd;     //Get a random seed from the OS entropy device, or whatever
+    std::mt19937_64 eng(rd());
+    uniform_int_distribution<int> distr(1,up);
     return distr(eng);
 }
 void GA::init_population(){
@@ -94,7 +105,8 @@ void GA::crossover(vector<int> parent_index){
             vector<float> child1(n_dim);
             vector<float> child2(n_dim);
         
-            for(int j=0;j<n_dim;j++){
+            int cross_dim = get_rand(n_dim);
+            for(int j=0;j<cross_dim;j++){
                 child1[j] = 0.7*X[i][j] + 0.3*X[parent_index[i]][j];
                 child2[j] = 0.3*X[i][j] + 0.7*X[parent_index[i]][j];
             }
@@ -152,17 +164,4 @@ int main(){
     function<float(vector<float>)> test_func = pow_test;
     GA test(test_func,20,3,lb,ub,0.75, 0.1,500);
     test.run();
-    // test.init_population();
-    // test.get_fitness();
-    // test_rand = test.selection();
-    // test.crossover(test_rand);
-    // test.mutation();
-    // //test_rand = test.selection();
-    // for(int i=0;i<10;i++){
-    //     for(int j=0;j<3;j++){
-    //         cout<<test.X[i][j]<<" ";
-    //     }
-    //     cout<<"Fitness "<<test.fitness[i]<<endl;
-    //     cout<<endl;
-    // }
 }
