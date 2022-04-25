@@ -17,7 +17,7 @@ int main(int, char**) {
     // Eigen::Vector<double, 3> v;
     // v<<1.0, 2.0, 3.0;
     // std::cout << fun(v) << std::endl;
-    ParticalSwarmOptimization<double, 5> PSO(&fun1, 10000, 10000);
+    ParticalSwarmOptimization<double, 5> PSO(&fun1, 10000000, 10000);
     PSO.run();
     std::cout << "best sol = " << PSO.getSol() << " optima = [" << PSO.getOptimal().transpose() << "]" << std::endl;
     return 0;

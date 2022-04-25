@@ -6,7 +6,7 @@
 template<typename T, std::size_t L>
 class ParticalSwarmOptimization: public Optimizer{
 public:
-    ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles=1e5, int MaxIters=1500, T C1=2.5, T C2=0.5, T weight=0.5, T tolerence=1e-10, T delta_t=0.01);
+    ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles=1e5, int MaxIters=1500, T C1=2.5, T C2=0.5, T weight=0.5, T tolerence=1e-10, T delta_t=1.0);
     void run() override;
     Eigen::Vector<T, L> getOptimal();
     T getSol();
@@ -23,7 +23,6 @@ private:
     int particleNum;
     T sol;
     Eigen::Matrix<T, Eigen::Dynamic, L> particles;
-    Eigen::Matrix<T, Eigen::Dynamic, L> old_particles;
     Eigen::Matrix<T, Eigen::Dynamic, L> personal_best;
     Eigen::Vector<T, Eigen::Dynamic>    personal_best_func_values;
     Eigen::Vector<T, Eigen::Dynamic>    current_func_values;
@@ -71,7 +70,6 @@ void ParticalSwarmOptimization<T,L>::run(){
     _updateParticles();
     for (int i = 0; i < maxIter; ++i) {
         _updateCurrentFuncValues();
-        // std::cout << "current_function_values = " <<current_func_values.transpose()<< std::endl;
         tmpSol = current_func_values.minCoeff(&minId);
         T diff = std::abs(sol - tmpSol);
         if(diff < tol){
@@ -84,27 +82,18 @@ void ParticalSwarmOptimization<T,L>::run(){
             optimal = particles.row(minId);
         }
         _updateVelocity();
-        // std::cout << "v = " << std::endl;
-        // std::cout << v << std::endl;
         _updateParticles();
-        // std::cout << "particles = " << std::endl;
-        // std::cout << particles << std::endl;
         findPersonalBest();
-        // std::cout << "personal best = " << std::endl;
-        // std::cout << personal_best << std::endl;
         findGroupBest();
-        // std::cout << "group best = " << std::endl;
-        // std::cout << group_best << std::endl;
         std::cout << "Iter" << i << ": minFuncVal=" << sol << " x= [" << optimal.transpose()<<"]" <<" delta_f=" <<diff<< " ||V||=" <<v.squaredNorm() << std::endl;
     }
-    sol = tmpSol;
-    optimal = particles.row(minId);
+    // sol = tmpSol;
+    // optimal = particles.row(minId);
 }
 
 template<typename T, std::size_t L>
 void ParticalSwarmOptimization<T,L>::_initParticles() {
     particles = 100. * Eigen::Matrix<T, Eigen::Dynamic, L>::Random(particleNum, L);
-    old_particles = particles;
 }
 
 template<typename T, std::size_t L>
@@ -122,8 +111,6 @@ void ParticalSwarmOptimization<T, L>::_updateVelocity() {
 template<typename T, std::size_t L>
 void ParticalSwarmOptimization<T, L>::_updateParticles() {
     particles = particles + v * dt;
-    // auto diff = particles - old_particles;
-    // old_particles = particles;
 }
 
 template<typename T, std::size_t L>
