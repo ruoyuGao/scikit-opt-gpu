@@ -7,9 +7,9 @@ double fun(Eigen::Vector<double, 3> &x){
     return x.dot(x);
 }
 
-double fun1(Eigen::Vector<double, 5>& x){
-    Eigen::Vector<double, 5> v;
-    v<<1,2,3,4,5;
+double fun1(Eigen::Vector<double, 2>& x){
+    Eigen::Vector<double, 2> v;
+    v<<1,2;
     return x.dot(x - v);
 }
 
@@ -17,7 +17,7 @@ int main(int, char**) {
     // Eigen::Vector<double, 3> v;
     // v<<1.0, 2.0, 3.0;
     // std::cout << fun(v) << std::endl;
-    ParticalSwarmOptimization<double, 5> PSO(&fun1, 10000000, 10000);
+    ParticalSwarmOptimization<double, 2> PSO(&fun1, 10000, 10000);
     PSO.run();
     std::cout << "best sol = " << PSO.getSol() << " optima = [" << PSO.getOptimal().transpose() << "]" << std::endl;
     return 0;

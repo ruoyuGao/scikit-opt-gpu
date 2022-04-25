@@ -2,19 +2,17 @@
 
 
 int main(int, char**) {
-    // Eigen::Vector<double, 3> v;
-    // v<<1.0, 2.0, 3.0;
-    // std::cout << fun(v) << std::endl;
-    const std::size_t dim = 5;
-    ParticalSwarmOptimizationGPU<dim> PSO(10, 10);
+    const std::size_t dim = 2;
+    ParticalSwarmOptimizationGPU<dim> PSO(1000000, 10000);
     PSO.run();
-    float * sol = PSO.getSol();
-    // std::cout << "best sol = " << PSO.getSol() << " optima = [" << PSO.getOptimal().transpose() << "]" << std::endl;
+    double * sol = new double[dim];
+    sol = PSO.getSol();
     printf("Optimal = %lf Sol = [", PSO.getOptimal());
     for (size_t i = 0; i < dim - 1; i++)
     {
-        printf("%ld, ", sol[i]);
+        printf("%lf, ", sol[i]);
     }
-    printf("%ld]\n", sol[dim-1]);
+    printf("%lf]\n", sol[dim-1]);
+
     return 0;
 }
