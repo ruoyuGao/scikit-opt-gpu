@@ -136,7 +136,6 @@ void ParticalSwarmOptimization<T, L>::findGroupBest() {
     Eigen::Index minId;
     current_func_values.minCoeff(&minId);
     group_best.rowwise() = particles.row(minId);
-    
 }
 
 template<typename T, std::size_t L>
