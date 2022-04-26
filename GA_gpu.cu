@@ -13,22 +13,30 @@ __device__ int selection(float rand_number, int pop_size);
 __device__ float4 generate(curandStatePhilox4_32_10_t *globalState, int ind);
 __device__ float get_fitness_gpu(float* X_cuda, int row_index, int n_dim);
 __global__ void setup_kernel(curandStatePhilox4_32_10_t *state, unsigned long seed);
-//-------------This is our kernel function where the random numbers generated------//
+//-------------This is our kernel function where the random numbers generated and do GA here------//
 __global__ void our_kernel(curandStatePhilox4_32_10_t *globalState, int pop_size, int n_dim, float cross_prob, float mutation_prob, float* X_cuda, float* lb, float* ub, int block_size, int offset);
 float get_random(float low, float up);
 void run();
 void get_fitness(float* X, float* fitness, int pop_size, int n_dim);
 void init_population(float** X, int pop_size, int n_dim);
-int main()
+int main(int argc, char *argv[])
 {   
     printf("Here is GA, first parameter: iteration, second parameter: pop_size\n");
     cudaError_t res;
-    int iteration = 100000;
-    int pop_size = 1024;
-    int block_size = 64;
+    printf("parameter seq: iteration pop_size cross_prob, mutate_prob");
+    if(argc!= 4){
+        printf("wrong number of input size\n");
+    }
+    int iteration = atoi(argv[1]);
+    int pop_size =  atoi(argv[2]);
+    float cross_prob = atof(argv[3]);
+    float mutation_prob = atof(argv[4]);
+    //int iteration = 100000;
+    //int pop_size = 1024;
+    int block_size = 256;
     int n_dim = 3;
-    float cross_prob = 0.7;
-    float mutation_prob = 0.001;
+    //float cross_prob = 0.7;
+    //float mutation_prob = 0.01;
     //init X
     // float** X= NULL;
     float* X_cuda_row= NULL;
@@ -76,9 +84,9 @@ int main()
     lb = (float *)calloc(n_dim, sizeof(float));
     //printf("here75\n");
     ub = (float *)calloc(n_dim, sizeof(float));
-    printf("here77\n");
+    //printf("here77\n");
     res=cudaMalloc((void**)&lb_cuda, sizeof(float)*n_dim);CHECK(res);
-    printf("here79\n");
+    //printf("here79\n");
     res=cudaMalloc((void**)&ub_cuda, sizeof(float)*n_dim);CHECK(res);
     //printf("here81\n");
     //set lb and ub
@@ -248,10 +256,6 @@ __global__ void our_kernel(curandStatePhilox4_32_10_t *globalState, int pop_size
 float get_random(float low, float up){
     float res = low + 1.0 * ( rand() % RAND_MAX ) / RAND_MAX * ( up - low );
     return res;
-}
-
-void run(){
-
 }
 
 void get_fitness(float* X, float* fitness, int pop_size, int n_dim){

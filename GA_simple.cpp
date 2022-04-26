@@ -1,15 +1,13 @@
 #include<iostream>
-#include <iostream>
 #include<functional>
 #include<vector>
 #include<random>
 #include<cmath>
 #include<list>
-#include "Eigen"
-#include"Dense"
+#include <algorithm> 
 
 using namespace std;
-using namespace Eigen;
+
 class GA{
     public:
         function<float(vector<float>)> func;
@@ -40,7 +38,7 @@ class GA{
         float cross_prob, float mutate_prob, int iter);
 };
 
-GA::GA(function<float(vector<float>)> func, int pop_size, int n_dim,vector<float>& in_lb, vector<float>&in_ub, float cross_prob, float mutate_prob, int iter):lb(n_dim),ub(n_dim),fitness(pop_size),X(pop_size, vector<float>(n_dim)){
+GA::GA(function<float(vector<float>)> func, int pop_size, int n_dim,vector<float>& in_lb, vector<float>&in_ub, float cross_prob, float mutate_prob, int iter):lb(n_dim),ub(n_dim),fitness(pop_size,0),X(pop_size, vector<float>(n_dim)){
     this->pop_size = pop_size;
     this->is_roulette_wheel_selection = false;
     this->n_dim = n_dim;
@@ -50,6 +48,7 @@ GA::GA(function<float(vector<float>)> func, int pop_size, int n_dim,vector<float
     this->cross_prob =cross_prob;
     this->mutate_prob = mutate_prob;
     this->iteration = iter;
+    this->best_fitness = 0;
 }
 
 void GA::get_fitness(){
@@ -144,24 +143,34 @@ void GA::run(){
         select_index = selection();
         crossover(select_index);
         mutation();
-        get_fitness();
-        int max_fitness_index = max_element(fitness.begin(),fitness.end()) - fitness.begin();
-        float max_fitness = fitness[max_fitness_index];
-        if(best_fitness<max_fitness){
-            best_x = X[max_fitness_index];
-            best_fitness = max_fitness;
-        }
-        cout<<"iteration: "<<i<<" "<<"best fitness: "<< best_fitness<<endl;
+        //if(i%100==0)cout<<"iteration: "<<i<<" "<<"best fitness: "<< best_fitness<<endl;
     }
+    get_fitness();
+    int max_fitness_index = max_element(fitness.begin(),fitness.end()) - fitness.begin();
+    float max_fitness = fitness[max_fitness_index];
+    if(best_fitness<max_fitness){
+        best_x = X[max_fitness_index];
+        best_fitness = max_fitness;
+    }
+    cout<<"best fitness: "<< best_fitness<<endl;
 }
 float pow_test(vector<float> tt){
-    return tt[0] + 10* sin(5*tt[0])+ 7*cos(4*tt[0]);
+    return tt[0] + 10* sin(5*tt[0])+ 7*cos(4*tt[0])+ tt[1] +tt[2];
 }
-int main(){
+int main(int argc, char *argv[]){
+
+    printf("parameter seq: iteration pop_size cross_prob, mutate_prob");
+    if(argc!= 4){
+        printf("wrong number of input size\n");
+    }
+    int iteration = atoi(argv[1]);
+    int pop_size =  atoi(argv[2]);
+    float cross_prob = atof(argv[3]);
+    float mutate_prob = atof(argv[4]);
     vector<int> test_rand(10);
-    vector<float>lb = {-10.0,2.2,2.1};
-    vector<float>ub = {10.0,7.8,9.9};
+    vector<float>lb = {-10.0,-10,-10};
+    vector<float>ub = {10.0,10 ,10 };
     function<float(vector<float>)> test_func = pow_test;
-    GA test(test_func,20,3,lb,ub,0.75, 0.1,500);
+    GA test(test_func,pop_size,3,lb,ub,cross_prob, mutate_prob,iteration);
     test.run();
 }
