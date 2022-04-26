@@ -13,11 +13,10 @@ double fun1(Eigen::Vector<double, 2>& x){
     return x.dot(x - v);
 }
 
-int main(int, char**) {
-    // Eigen::Vector<double, 3> v;
-    // v<<1.0, 2.0, 3.0;
-    // std::cout << fun(v) << std::endl;
-    ParticalSwarmOptimization<double, 2> PSO(&fun1, 10000, 10000);
+int main(int argc, char* argv[]) {
+    int particleNum = atoi(argv[1]);
+    int iters = atoi(argv[2]);
+    ParticalSwarmOptimization<double, 2> PSO(&fun1, particleNum, iters);
     PSO.run();
     std::cout << "best sol = " << PSO.getSol() << " optima = [" << PSO.getOptimal().transpose() << "]" << std::endl;
     return 0;

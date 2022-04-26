@@ -1,9 +1,11 @@
 #include <src/ParticleSwarmOptimizationGPU.cuh>
 
 
-int main(int, char**) {
+int main(int argc, char* argv[]) {
     const std::size_t dim = 2;
-    ParticalSwarmOptimizationGPU<dim> PSO(1000000, 10000);
+    int particleNum = atoi(argv[1]);
+    int iters = atoi(argv[2]);
+    ParticalSwarmOptimizationGPU<dim> PSO(particleNum, iters);
     PSO.run();
     double * sol = new double[dim];
     sol = PSO.getSol();

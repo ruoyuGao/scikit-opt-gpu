@@ -26,6 +26,7 @@ private:
     Eigen::Matrix<T, Eigen::Dynamic, L> personal_best;
     Eigen::Vector<T, Eigen::Dynamic>    personal_best_func_values;
     Eigen::Vector<T, Eigen::Dynamic>    current_func_values;
+    Eigen::Vector<T, Eigen::Dynamic>    v_norm;
     Eigen::Matrix<T, Eigen::Dynamic, L> group_best;
     Eigen::Matrix<T, Eigen::Dynamic, L> v;
     std::function<T(Eigen::Vector<T,L>&)> function;
@@ -77,15 +78,20 @@ void ParticalSwarmOptimization<T,L>::run(){
             optimal = particles.row(minId);
             break;
         }
-        if(tmpSol<sol) {
+        if(tmpSol<sol){
             sol = tmpSol;
             optimal = particles.row(minId);
         }
+        v_norm = v.rowwise().norm();
+        Eigen::Index minVId, maxVId;
+        T minV, maxV;
+        minV = v_norm.minCoeff(&minVId);
+        maxV = v_norm.maxCoeff(&maxVId);
         _updateVelocity();
         _updateParticles();
         findPersonalBest();
         findGroupBest();
-        std::cout << "Iter" << i << ": minFuncVal=" << sol << " x= [" << optimal.transpose()<<"]" <<" delta_f=" <<diff<< " ||V||=" <<v.squaredNorm() << std::endl;
+        std::cout << "Iter" << i << ": minFuncVal=" << sol << " x= [" << optimal.transpose()<<"]" <<" delta_f=" <<diff<< " ||V||=" <<v.squaredNorm() << " minV=" << minV << " minVId=" << minVId << " maxV=" << maxV << " MaxVId=" << maxVId << std::endl;
     }
     // sol = tmpSol;
     // optimal = particles.row(minId);
@@ -167,7 +173,6 @@ template<typename T, std::size_t L>
 Eigen::Vector<T, L> ParticalSwarmOptimization<T, L>::getOptimal() {
     return optimal;
 }
-
 
 
 #endif /* FA0CCF46_5367_4080_8DBC_A031C2232C93 */
