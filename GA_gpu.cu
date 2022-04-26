@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     float mutation_prob = atof(argv[4]);
     //int iteration = 100000;
     //int pop_size = 1024;
-    int block_size = 256;
+    int block_size = 128;
     int n_dim = 3;
     //float cross_prob = 0.7;
     //float mutation_prob = 0.01;
@@ -179,7 +179,7 @@ __device__ int selection(float rand_number, int pop_size){
 }
 
 __device__ float get_fitness_gpu(float* X_cuda, int row_index, int n_dim){
-    float res = X_cuda[row_index*n_dim+0] + 10* sin(5*X_cuda[row_index*n_dim+0]) +7* cos(4* X_cuda[row_index*n_dim+0]);
+    float res = X_cuda[row_index*n_dim+0] + 10* sin(5*X_cuda[row_index*n_dim+0]) +7* cos(4* X_cuda[row_index*n_dim+0])+X_cuda[row_index*n_dim+1]+X_cuda[row_index*n_dim+2];
     return res;
 }
 
@@ -262,7 +262,7 @@ void get_fitness(float* X, float* fitness, int pop_size, int n_dim){
     //printf("%d\n",pop_size);
     for(int m=0;m<pop_size;m++){
         //printf("%d\n",m);
-        fitness[m] = X[m*n_dim+0] + 10* sin(5*X[m*n_dim+0]) +7* cos(4* X[m*n_dim+0]);
+        fitness[m] = X[m*n_dim+0] + 10* sin(5*X[m*n_dim+0]) +7* cos(4* X[m*n_dim+0])+X[m*n_dim+1]+X[m*n_dim+2];
     }
 }
 
