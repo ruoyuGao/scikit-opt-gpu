@@ -1,7 +1,7 @@
 # [scikit-opt-gpu](https://github.com/guofei9987/scikit-opt)
 
 [![codecov](https://codecov.io/gh/guofei9987/scikit-opt/branch/master/graph/badge.svg)](https://codecov.io/gh/guofei9987/scikit-opt)
-[![License](https://img.shields.io/pypi/l/scikit-opt.svg)](https://github.com/guofei9987/scikit-opt/blob/master/LICENSE)
+[![License](https://img.shields.io/pypi/l/scikit-opt.svg)](https://github.com/ruoyuGao/scikit-opt-gpu/blob/ruoyu_edit/LICENSE)
 ![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
 ## Usage
 1. Load gcc 9.2 and git 2.6 from CIMS cluster
