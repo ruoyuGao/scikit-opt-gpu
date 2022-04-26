@@ -3,11 +3,9 @@
 #include <time.h>
 #include <cuda.h>
 #include<math.h>
-#include"cuda_runtime.h"
+#include<curand_kernel.h>// this lib shoulb be included
+#include<cuda_runtime.h>
 #include"device_launch_parameters.h"
-#include"curand_kernel.h"// this lib shoulb be included
-#include<ctime>
-#include<iostream>
 #include<random>
 #define CHECK(res) if(res!=cudaSuccess){printf("CUDA Error: %s\n", cudaGetErrorString(res));exit(-1);}
 //-------------------generate random numbers-------//
@@ -32,33 +30,35 @@ int main()
     float cross_prob = 0.7;
     float mutation_prob = 0.001;
     //init X
-    float** X= NULL;
+    // float** X= NULL;
     float* X_cuda_row= NULL;
     float* X_one_dim= NULL;
     //printf("here38\n");
-    X = (float **)malloc(pop_size*sizeof(float*));
+    // X = (float **)calloc(pop_size*sizeof(float*));
     //printf("here40\n");
-    X_one_dim = (float*)malloc(sizeof(float)*n_dim*pop_size);
+    X_one_dim = (float*)calloc(n_dim*pop_size, sizeof(float));
     //printf("here42\n");
-    res=cudaMalloc((void**)(&X_cuda_row), pop_size*n_dim*sizeof(float));CHECK(res);
+    res=cudaMalloc((void**)&X_cuda_row, pop_size*n_dim*sizeof(float));CHECK(res);
     
     //printf("here45\n");
-    for(int i=0;i<pop_size;i++){
-        X[i] = (float*)malloc(sizeof(float)*n_dim);
-    }
+    // for(int i=0;i<pop_size;i++){
+    //     X[i] = (float*)calloc(sizeof(float)*n_dim);
+    // }
     //printf("here49\n");
-    init_population(X,pop_size,n_dim);
-    
-    for(int i=0;i<pop_size;i++){
-        for(int j=0;j<n_dim;j++){
-            X_one_dim[i*pop_size+j] = X[i][j];
-            //printf("%f\n",X_one_dim[i*pop_size+j]);
-        }
+    // init_population(X,pop_size,n_dim);
+    for(int i=0; i < pop_size * n_dim; i++){
+        X_one_dim[i]=get_random(-3.0, 5.0);
     }
+    // for(int i=0;i<pop_size;i++){
+    //     for(int j=0;j<n_dim;j++){
+    //         X_one_dim[i*pop_size+j] = X[i][j];
+    //         //printf("%f\n",X_one_dim[i*pop_size+j]);
+    //     }
+    // }
     //get fitness
     float *fitness= NULL;
     //printf("here60\n");
-    fitness = (float *)malloc(sizeof(float)*pop_size);
+    fitness = (float *)calloc(pop_size, sizeof(float));
     // for(int i=0;i<pop_size*n_dim;i++){
     //     printf("%f ", X_one_dim[i]);
     // }
@@ -70,14 +70,14 @@ int main()
     //init lb and ub
     float *lb= NULL;
     float *ub= NULL;
-    float *lb_cuda= NULL;
-    float *ub_cuda=NULL;
+    float *lb_cuda;
+    float *ub_cuda;
     //printf("here73\n");
-    lb = (float *)malloc(sizeof(float)*n_dim);
+    lb = (float *)calloc(n_dim, sizeof(float));
     //printf("here75\n");
-    ub = (float *)malloc(sizeof(float)*n_dim);
+    ub = (float *)calloc(n_dim, sizeof(float));
     printf("here77\n");
-    cudaMalloc((void**)&lb_cuda, sizeof(float)*n_dim);
+    res=cudaMalloc((void**)&lb_cuda, sizeof(float)*n_dim);CHECK(res);
     printf("here79\n");
     res=cudaMalloc((void**)&ub_cuda, sizeof(float)*n_dim);CHECK(res);
     //printf("here81\n");
@@ -144,7 +144,7 @@ int main()
     //printf("here3\n");
     free(fitness);
     //printf("here4\n");
-    free(X);
+    // free(X);
     //printf("here5\n");
     //free(X_one_dim);
     //printf("here6\n");
