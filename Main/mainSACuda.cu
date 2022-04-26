@@ -6,7 +6,8 @@ int main(int argc, char* argv[]) {
     int particleNum = atoi(argv[1]);
     int iters = atoi(argv[2]);
     int inneriters = atoi(argv[3]);
-    SimulatedAnnealingGPU<dim> SA(particleNum, iters, inneriters);
+    int verbose = atoi(argv[4]);
+    SimulatedAnnealingGPU<dim> SA(particleNum, iters, inneriters, verbose);
     SA.run();
     double * sol = new double[dim];
     sol = SA.getSol();

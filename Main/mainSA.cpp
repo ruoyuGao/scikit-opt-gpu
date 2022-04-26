@@ -17,7 +17,8 @@ int main(int argc, char* argv[]) {
     int particleNum = atoi(argv[1]);
     int iters = atoi(argv[2]);
     int inneriters = atoi(argv[3]);
-    SimulatedAnnealing<double, 2> SA(&fun1, particleNum, iters, inneriters);
+    int verbose = atoi(argv[4]);
+    SimulatedAnnealing<double, 2> SA(&fun1, particleNum, iters, inneriters, verbose);
     SA.run();
     std::cout << "Optimal = " << SA.getOptimal() << " x = [" << SA.getSol().transpose() << "]" << std::endl;
     return 0;

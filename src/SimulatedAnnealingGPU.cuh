@@ -54,17 +54,16 @@ __global__ void Anneal(double *diff, double * x, double * x_new, double* y_new, 
 template<std::size_t L>
 class SimulatedAnnealingGPU{
 public:
-    SimulatedAnnealingGPU(int initialTrails=1e5, int MaxIters=1500,int innerIter=300, double T_max=100., double T_min = 1e-5, double tolerance=1e-10, int threadsNum=256);
+    SimulatedAnnealingGPU(int initialTrails=1e5, int MaxIters=1500,int innerIter=300, int Verbose=1, double T_max=100., double T_min = 1e-5, double tolerance=1e-10, int threadsNum=256);
     void run();
     double getOptimal();
     double * getSol();
 private:
-    double t, tMax, tMin;
-    int maxIter, innerMaxIter, iter, stay, threads, size;
+    double t;
+    double tMax;
+    double tMin;
     double tol;
     double optimal;
-    int xNum;
-    int blocks, block_for_xNum;
     double * y;
     double * d_y;
     double * d_y_new;
@@ -77,32 +76,40 @@ private:
     double * ddiff;
     double * delta_f;
     double * df;
-    double *minValue;
+    double * minValue;
+    double * sol;
     int * minIndex;
-    double* sol;
     int * sol_id;
+    int xNum;
+    int maxIter;
+    int innerMaxIter;
+    int iter;
+    int stay;
+    int threads;
+    int size;
+    int blocks;
+    int block_for_xNum;
+    int verbose;
     void _updateTemp();
     void _updateXNew();
     void _initX();
     void _initCuda();
     void _updateCurrentFuncValues();
-    double _randGen(double ub = 1.0, double lb = 0.0);
-    void _randInit(double * data, int size, double scale);
     void findGroupBest();
     void evaluate();  
     void evaluateXNew();  
     void anneal();
+    void _randInit(double * data, int size, double scale);
+    double _randGen(double ub = 1.0, double lb = 0.0);
     double minFunVal(int * id);  
-    // double minFunValCPU(int * id);
 };
 
-// template<std::size_t L>
 template<std::size_t L>
-SimulatedAnnealingGPU<L>::SimulatedAnnealingGPU(int initialTrails, int MaxIters ,int innerIter, double T_max, double T_min, double tolerance, int threadsNum){
-    // function = func;
+SimulatedAnnealingGPU<L>::SimulatedAnnealingGPU(int initialTrails, int MaxIters ,int innerIter, int Verbose, double T_max, double T_min, double tolerance, int threadsNum){
     tol = tolerance;
     maxIter = MaxIters;
     innerMaxIter= innerIter;
+    verbose = Verbose;
     iter = 0;
     stay = 0;
     xNum = initialTrails;
@@ -119,19 +126,9 @@ SimulatedAnnealingGPU<L>::SimulatedAnnealingGPU(int initialTrails, int MaxIters 
     _initX();
     _initCuda();
     evaluate();
-    // optimal = minFunVal(sol_id);
-    // findGroupBest();
-    // checkCudaErrors(cudaMemcpy(sol, group_best, L * sizeof(double), cudaMemcpyDeviceToHost)); 
-    // checkCudaErrors(cudaMemcpy(bestFuncVals, d_y, xNum * sizeof(double), cudaMemcpyDeviceToDevice)); 
-    // bestFuncVals = d_y;
     optimal = minFunVal(sol_id);   
-    printf("optimal = %lf, minId = %d pos=%d\n", optimal, *sol_id, (*sol_id) * L);
     checkCudaErrors(cudaMemcpy(group_best, d_x + (*sol_id) * L, L * sizeof(double), cudaMemcpyDeviceToDevice)); 
     checkCudaErrors(cudaMemcpy(sol, group_best, L * sizeof(double), cudaMemcpyDeviceToHost)); 
-    // printf("group best\n");
-    // print<<<blocks,threads>>>(group_best, L);
-    // gpuErrchk( cudaPeekAtLastError() );
-    // gpuErrchk( cudaDeviceSynchronize() );
 }
 
 template<std::size_t L>
@@ -148,11 +145,13 @@ void SimulatedAnnealingGPU<L>::run(){
         checkCudaErrors(cudaMemcpy(df, delta_f, sizeof(double), cudaMemcpyDeviceToHost));
         checkCudaErrors(cudaMemcpy(&optimal, minValue, sizeof(double), cudaMemcpyDeviceToHost));
         checkCudaErrors(cudaMemcpy(sol, group_best, L*sizeof(double), cudaMemcpyDeviceToHost));
-        printf("Iter%d: Optimal=%lf Temp=%lf ∆f=%lf x=[", ii, optimal, t, *df);
-        for(int j = 0; j < L-1; j++){
+        if(verbose){
+            printf("Iter%d: Optimal=%lf Temp=%lf ∆f=%lf x=[", ii, optimal, t, *df);
+            for(int j = 0; j < L-1; j++){
                 printf("%lf ", sol[j]);
+            }
+            printf("%lf]\n", sol[L-1]);
         }
-        printf("%lf]\n", sol[L-1]);
         iter ++;
         _updateTemp();
         if( *df < tol ) stay++;
@@ -169,7 +168,6 @@ double SimulatedAnnealingGPU<L>::minFunVal(int * id) {
     reduceMinIdxOptimized<<<1, threads>>>(d_y, xNum, minValue, minIndex);
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
-    // (*id)-=1;
     checkCudaErrors(cudaMemcpy(res, minValue, sizeof(double), cudaMemcpyDeviceToHost));
     checkCudaErrors(cudaMemcpy(id, minIndex, sizeof(int), cudaMemcpyDeviceToHost));
     return *res;
@@ -215,7 +213,6 @@ void SimulatedAnnealingGPU<L>::findGroupBest() {
 
 template<std::size_t L>
 void SimulatedAnnealingGPU<L>::_initCuda() {
-    //TODO: Use cudaMemcpyAsync
     checkCudaErrors(cudaMalloc((void **) &d_x, size * sizeof(double)));
     checkCudaErrors(cudaMalloc((void **) &u, size * sizeof(double)));
     checkCudaErrors(cudaMalloc((void **) &tmp_y, size * sizeof(double)));
@@ -228,7 +225,6 @@ void SimulatedAnnealingGPU<L>::_initCuda() {
     checkCudaErrors(cudaMalloc((void **) &minValue, sizeof(double)));
     checkCudaErrors(cudaMalloc((void **) &delta_f, sizeof(double)));
     checkCudaErrors(cudaMalloc((void **) &minIndex, sizeof(int)));
-    // CUBLAS_CHECK(cublasCreate(&handle));
 }
 
 
@@ -250,12 +246,8 @@ void SimulatedAnnealingGPU<L>::evaluateXNew() {
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
     SumRowwise<<<block_for_xNum, threads>>>(tmp_y, d_y_new, xNum, dim);
-    gpuErrchk( cudaPeekAtLastError() );
-    gpuErrchk( cudaDeviceSynchronize() );
-    // printf("d_y\n");
-    // print<<<blocks, threads>>>(d_y, xNum);
-    // gpuErrchk( cudaPeekAtLastError() );
-    // gpuErrchk( cudaDeviceSynchronize() );
+    gpuErrchk( cudaPeekAtLastError());
+    gpuErrchk( cudaDeviceSynchronize());
 }
 
 template<std::size_t L>
@@ -289,7 +281,6 @@ __global__ void function(double * a, double * res, int dim, int size){
     double tmp = a[index];
     if (index < size){
         res[index] = tmp * (tmp - (double)(index % dim + 1));
-        // printf("index = %d tmp = %lf tmp1 = %lf res = %lf\n", index, tmp, (tmp - (double)(index % dim + 1)), res[index]);
     }
 }
 

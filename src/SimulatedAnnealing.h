@@ -6,39 +6,45 @@
 template<typename T, std::size_t L>
 class SimulatedAnnealing: public Optimizer{
 public:
-    SimulatedAnnealing(std::function<T(Eigen::Vector<T, L>&)> func, int initialTrails=1e5, int MaxIters=1500,int innerIter=300, T T_max=100., T T_min = 1e-5, T tolerance=1e-10);
+    SimulatedAnnealing(std::function<T(Eigen::Vector<T, L>&)> func, int initialTrails=1e5, int MaxIters=1500, int innerIter=300, int Verbose=1, T T_max=100., T T_min = 1e-5, T tolerance=1e-10);
     void run() override;
     Eigen::Vector<T, L> getSol();
     T getOptimal();
 private:
-    T t, tMax, tMin;
-    int maxIter, innerMaxIter, iter, stay;
+    T t;
+    T tMax;
+    T tMin;
     T tol;
     T optimal;
-    int xNum;
     T groupBestFunVal;
+    int maxIter;
+    int innerMaxIter;
+    int iter;
+    int stay;
+    int xNum;
+    int verbose;
     Eigen::Vector<T, L> sol;
     Eigen::Vector<T, Eigen::Dynamic> y;
     Eigen::Vector<T, Eigen::Dynamic> y_new;
     Eigen::Vector<T, L> group_best;
     Eigen::Matrix<T, Eigen::Dynamic, L> x;
     Eigen::Matrix<T, Eigen::Dynamic, L> x_new;
-    T _randGen();
     std::function<T(Eigen::Vector<T,L>&)> function;
     Eigen::Vector<T, Eigen::Dynamic> evaluate(Eigen::Matrix<T, Eigen::Dynamic, L>);
     void evaluate();
     void _updateTemp();
-    // void _updateX();
     void _updateXNew();
     void findGroupBest();
+    T _randGen();
 };
 
 template<typename T, std::size_t L>
-SimulatedAnnealing<T,L>::SimulatedAnnealing(std::function<T(Eigen::Vector<T, L>&)> func, int initialTrails, int MaxIters, int innerIter, T T_max, T T_min, T tolerance){
+SimulatedAnnealing<T,L>::SimulatedAnnealing(std::function<T(Eigen::Vector<T, L>&)> func, int initialTrails, int MaxIters, int innerIter, int Verbose, T T_max, T T_min, T tolerance){
     function = func;
     tol = tolerance;
     maxIter = MaxIters;
     innerMaxIter= innerIter;
+    verbose = Verbose;
     iter = 0;
     stay = 0;
     xNum = initialTrails;
@@ -77,20 +83,21 @@ void SimulatedAnnealing<T,L>::run(){
             }
         }
         T delta_f = abs(tmpOptimal - optimal);
-        printf("Iter%d: Optimal=%lf Temp=%lf ∆f=%lf x=[", ii, optimal, t, delta_f);
-        for(int j = 0; j < L-1; j++){
+        if(verbose){
+            printf("Iter%d: Optimal=%lf Temp=%lf ∆f=%lf x=[", ii, optimal, t, delta_f);
+            for(int j = 0; j < L-1; j++){
                 printf("%lf ", sol[j]);
             }
-        printf("%lf]\n", sol[L-1]);
+            printf("%lf]\n", sol[L-1]);
+        }
+
         iter ++;
         _updateTemp();
         if( delta_f < tol ) stay++;
         else stay = 0;
-
         if (t < tMin) break;
         if (stay > 150) break;
     }
-
 }
 
 template<typename T, std::size_t L>
@@ -103,7 +110,6 @@ void SimulatedAnnealing<T,L>::_updateXNew(){
     Eigen::Matrix<T, Eigen::Dynamic, L> u = Eigen::Matrix<T, Eigen::Dynamic, L>::Random(xNum, L);
     Eigen::Matrix<T, Eigen::Dynamic, L> sign = Eigen::Matrix<T, Eigen::Dynamic, L>::Random(xNum, L);
     Eigen::Matrix<T, Eigen::Dynamic, L> ones = Eigen::Matrix<T, Eigen::Dynamic, L>::Ones(xNum, L);
-    // printf("tmp initialized.\n");
     T factor = ((T)1.0 + (T)1.0/t);
     for(int i = 0; i < u.rows(); i++){
         for(int j = 0; j < u.cols(); j++){
@@ -113,10 +119,8 @@ void SimulatedAnnealing<T,L>::_updateXNew(){
             u(i, j) = pow(factor, abs(u(i, j)));
         }
     }
-    // printf("check add.\n");
     u = u - ones;
     x_new = x + 20. * t * (sign.array() * u.array()).matrix();
-    // printf("check after.\n");
 }
 
 template<typename T, std::size_t L>

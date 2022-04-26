@@ -16,8 +16,9 @@ double fun1(Eigen::Vector<double, 2>& x){
 int main(int argc, char* argv[]) {
     int particleNum = atoi(argv[1]);
     int iters = atoi(argv[2]);
-    ParticalSwarmOptimization<double, 2> PSO(&fun1, particleNum, iters);
+    int verbose = atoi(argv[3]);
+    ParticalSwarmOptimization<double, 2> PSO(&fun1, particleNum, iters, verbose);
     PSO.run();
-    std::cout << "best sol = " << PSO.getSol() << " optima = [" << PSO.getOptimal().transpose() << "]" << std::endl;
+    std::cout << "Optimal = " << PSO.getSol() << " x = [" << PSO.getOptimal().transpose() << "]" << std::endl;
     return 0;
 }

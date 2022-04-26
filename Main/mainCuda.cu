@@ -5,7 +5,8 @@ int main(int argc, char* argv[]) {
     const std::size_t dim = 2;
     int particleNum = atoi(argv[1]);
     int iters = atoi(argv[2]);
-    ParticalSwarmOptimizationGPU<dim> PSO(particleNum, iters);
+    int verbose = atoi(argv[3]);
+    ParticalSwarmOptimizationGPU<dim> PSO(particleNum, iters, verbose);
     PSO.run();
     double * sol = new double[dim];
     sol = PSO.getSol();
@@ -15,6 +16,5 @@ int main(int argc, char* argv[]) {
         printf("%lf, ", sol[i]);
     }
     printf("%lf]\n", sol[dim-1]);
-
     return 0;
 }

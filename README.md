@@ -12,6 +12,11 @@ module load git-2.6.3
 module load cmake-3
 module load cuda-11.4
 ```
+If you want to test the python version of this lib, please refer to the url above and do 
+```
+module load python-3.7
+pip install scikit-opt
+```
 2. Clone this repo and build it
 ```
 git clone git@github.com:ruoyuGao/scikit-opt-gpu.git
@@ -27,8 +32,18 @@ make -j4
 
 3. Run executable file
 ```
+# GA sequential version
 ./mainGaSeq iteration pop_size cross_prob mutate_prob
+# GA cuda version
 ./GA_gpu iteration pop_size cross_prob mutate_prob
+# PSO sequntial version
+./main particleNum maxIteration verbose
+# PSO GPU version
+./mainCuda particleNum maxIteration verbose
+# SA sequential version
+./mainSA num_of_initalSolutions maxOuterIteration maxInnerIteration verbose
+# SA cuda version
+./mainSACuda num_of_initalSolutions maxOuterIteration maxInnerIteration verbose
 ```
 
 

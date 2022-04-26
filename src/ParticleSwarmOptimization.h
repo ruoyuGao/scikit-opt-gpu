@@ -6,22 +6,22 @@
 template<typename T, std::size_t L>
 class ParticalSwarmOptimization: public Optimizer{
 public:
-    ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles=1e5, int MaxIters=1500, T C1=2.5, T C2=0.5, T weight=0.5, T tolerence=1e-10, T delta_t=1.0);
+    ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles=1e5, int MaxIters=1500, int Verbose=1, T C1=2.5, T C2=0.5, T weight=0.5, T tolerence=1e-10, T delta_t=1.0);
     void run() override;
     Eigen::Vector<T, L> getOptimal();
     T getSol();
     void printParticles(){std::cout << particles << std::endl;}
     void printV(){std::cout << v << std::endl;}
-
 private:
     T c1;
     T c2;
     T w;
     T tol;
-    int maxIter;
     T dt;
-    int particleNum;
     T sol;
+    int maxIter;
+    int verbose;
+    int particleNum;
     Eigen::Matrix<T, Eigen::Dynamic, L> particles;
     Eigen::Matrix<T, Eigen::Dynamic, L> personal_best;
     Eigen::Vector<T, Eigen::Dynamic>    personal_best_func_values;
@@ -44,7 +44,7 @@ private:
 };
 
 template<typename T, std::size_t L>
-ParticalSwarmOptimization<T,L>::ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles, int MaxIters, T C1, T C2, T weight, T tolerence, T delta_t):Optimizer(){
+ParticalSwarmOptimization<T,L>::ParticalSwarmOptimization(std::function<T(Eigen::Vector<T, L>&)> func, int NumParticles, int MaxIters, int Verbose, T C1, T C2, T weight, T tolerence, T delta_t):Optimizer(){
     function = func;
     c1 = C1;
     c2 = C2;
@@ -52,6 +52,7 @@ ParticalSwarmOptimization<T,L>::ParticalSwarmOptimization(std::function<T(Eigen:
     tol = tolerence;
     maxIter = MaxIters;
     dt = delta_t;
+    verbose = Verbose;
     particleNum = NumParticles;
     _initParticles();
     _initVelocity();
@@ -91,7 +92,9 @@ void ParticalSwarmOptimization<T,L>::run(){
         _updateParticles();
         findPersonalBest();
         findGroupBest();
-        std::cout << "Iter" << i << ": minFuncVal=" << sol << " x= [" << optimal.transpose()<<"]" <<" delta_f=" <<diff<< " ||V||=" <<v.squaredNorm() << " minV=" << minV << " minVId=" << minVId << " maxV=" << maxV << " MaxVId=" << maxVId << std::endl;
+        if(verbose){
+            std::cout << "Iter" << i << ": minFuncVal=" << sol <<" ∆f=" <<diff << " x= [" << optimal.transpose()<<"]" << std::endl;
+        }
     }
     // sol = tmpSol;
     // optimal = particles.row(minId);
