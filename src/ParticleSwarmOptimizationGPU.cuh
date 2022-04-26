@@ -68,8 +68,6 @@ private:
     double * particles;
     double * d_particles;
     double * personal_best;
-    double * personal_best_func_values;
-    double * current_func_values;
     double * group_best;
     double * v;
     double * d_v;
@@ -149,7 +147,7 @@ void ParticalSwarmOptimizationGPU<L>::run(){
     int minVId, maxVId;
     // int minId;
     double tmpOptimal;
-    double minV, maxV, cpuMin;
+    double minV, maxV;
     _updateParticles();
     // printf("Particles After\n");
     // print<<<blocks,threads>>>(d_particles, size);
