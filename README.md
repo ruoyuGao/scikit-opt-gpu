@@ -37,7 +37,7 @@ make -j4
 ./GA_gpu iteration pop_size cross_prob mutate_prob
 # PSO sequntial version
 ./main particleNum maxIteration verbose
-# PSO GPU version
+# PSO cuda version
 ./mainCuda particleNum maxIteration verbose
 # SA sequential version
 ./mainSA num_of_initalSolutions maxOuterIteration maxInnerIteration verbose
