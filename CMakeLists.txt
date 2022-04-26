@@ -81,6 +81,8 @@ IF(WITH_CUDA)
   ADD_EXE(matrixMulCUBLAS)
   ADD_EXE(cublas_amax_example)
   ADD_EXE(mainCuda)
+  ADD_EXE(mainGaSeq)
+  ADD_EXE(GA_gpu)
   ADD_EXE(mainSACuda)
 ENDIF(WITH_CUDA)
 

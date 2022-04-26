@@ -1,3 +1,7 @@
+
+# [scikit-opt-gpu](https://github.com/guofei9987/scikit-opt)
+[![License](https://img.shields.io/pypi/l/scikit-opt.svg)](https://github.com/ruoyuGao/scikit-opt-gpu/blob/ruoyu_edit/LICENSE)
+![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
 # scikit-opt-gpu
 
 ## Usage
@@ -20,3 +24,11 @@ You can use any cmake flags to build the project as long as it compiles. However
 cmake -DCMAKE_C_COMPILER=/usr/local/stow/gcc-9.2/bin/gcc -DCMAKE_CXX_COMPILER=/usr/local/stow/gcc-9.2/bin/g++ ..
 make -j4
 ```
+
+3. Run executable file
+```
+./mainGaSeq iteration pop_size cross_prob mutate_prob
+./GA_gpu iteration pop_size cross_prob mutate_prob
+```
+
+
