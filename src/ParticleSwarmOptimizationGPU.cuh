@@ -150,6 +150,7 @@ void ParticalSwarmOptimizationGPU<L>::run(){
     // int minId;
     double tmpOptimal;
     double minV, maxV, cpuMin;
+    double minV, maxV;
     _updateParticles();
     // printf("Particles After\n");
     // print<<<blocks,threads>>>(d_particles, size);
