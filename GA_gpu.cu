@@ -25,12 +25,12 @@ int main()
 {   
     printf("Here is GA, first parameter: iteration, second parameter: pop_size\n");
     cudaError_t res;
-    int iteration = 1000;
-    int pop_size = 64;
-    int block_size = 32;
+    int iteration = 100000;
+    int pop_size = 1024;
+    int block_size = 64;
     int n_dim = 3;
     float cross_prob = 0.7;
-    float mutation_prob = 0.1;
+    float mutation_prob = 0.001;
     //init X
     float** X= NULL;
     float* X_cuda_row= NULL;
@@ -68,16 +68,18 @@ int main()
     //res = cudaMalloc((void**)(&X_cuda_row), pop_size*n_dim*sizeof(float));CHECK(res);
     //get_fitness(X,fitness,pop_size,n_dim);
     //init lb and ub
-    float *lb= NULL, *ub= NULL;
-    float *lb_cuda= NULL, *ub_cuda=NULL;
+    float *lb= NULL;
+    float *ub= NULL;
+    float *lb_cuda= NULL;
+    float *ub_cuda=NULL;
     //printf("here73\n");
     lb = (float *)malloc(sizeof(float)*n_dim);
     //printf("here75\n");
     ub = (float *)malloc(sizeof(float)*n_dim);
-    //printf("here77\n");
-    res=cudaMalloc((void**)(&lb_cuda), n_dim*sizeof(float));CHECK(res);
-    //printf("here79\n");
-    res=cudaMalloc((void**)(&ub_cuda), n_dim*sizeof(float));CHECK(res);
+    printf("here77\n");
+    cudaMalloc((void**)&lb_cuda, sizeof(float)*n_dim);
+    printf("here79\n");
+    res=cudaMalloc((void**)&ub_cuda, sizeof(float)*n_dim);CHECK(res);
     //printf("here81\n");
     //set lb and ub
     
@@ -106,41 +108,45 @@ int main()
             //printf("%d\n",offset);
             our_kernel <<<1, N>>> (devStates,pop_size, n_dim, cross_prob, mutation_prob, X_cuda_row,lb_cuda, ub_cuda,block_size,offset);
         }
-        cudaMemcpy(X_one_dim, X_cuda_row, pop_size*n_dim*sizeof(float), cudaMemcpyDeviceToHost);
+        
+        // if(iter%100==0){
+        //     printf("max x: %f", X_one_dim[max_index*n_dim+0]);
+        //     printf("max_fitness: %f\n",max_fitness);
+        // }
+        
+    }
+    cudaDeviceSynchronize();
+    cudaMemcpy(X_one_dim, X_cuda_row, pop_size*n_dim*sizeof(float), cudaMemcpyDeviceToHost);
         // for(int i=0;i<pop_size*n_dim;i++){
         //     printf("%f ", X_one_dim[i]);
         // }
-        cudaDeviceSynchronize();
-        get_fitness(X_one_dim,fitness,pop_size,n_dim);
-        int max_index =0;
-        float max_fitness = 0;
-        for(int i=0;i<pop_size;i++){
-            if(fitness[i]>max_fitness){
-                max_index = i;
-                max_fitness = fitness[i];
-            }
+    cudaDeviceSynchronize();
+    get_fitness(X_one_dim,fitness,pop_size,n_dim);
+    int max_index =0;
+    float max_fitness = 0;
+    for(int i=0;i<pop_size;i++){
+        if(fitness[i]>max_fitness){
+            max_index = i;
+            max_fitness = fitness[i];
         }
-        if(iter%100==0){
-            printf("max x: %f", X_one_dim[max_index*n_dim+0]);
-            printf("max_fitness: %f\n",max_fitness);
-        }
-        
     }
+    printf("max x: %f", X_one_dim[max_index*n_dim+0]);
+    printf("max_fitness: %f\n",max_fitness);
     
     
     
     //printf("here\n");
-    //cudaFree(X_cuda_row);
+    cudaFree(X_cuda_row);
     //printf("here1\n");
-    //cudaFree(lb_cuda);
+    cudaFree(lb_cuda);
     //printf("here2\n");
-    //cudaFree(ub_cuda);
+    cudaFree(ub_cuda);
     //printf("here3\n");
     free(fitness);
     //printf("here4\n");
     free(X);
     //printf("here5\n");
-    free(X_one_dim);
+    //free(X_one_dim);
     //printf("here6\n");
     free(lb);
     //printf("here7\n");
@@ -178,7 +184,7 @@ __global__ void setup_kernel(curandStatePhilox4_32_10_t *state, unsigned long se
 //-------------This is our kernel function where the random numbers generated------//
 __global__ void our_kernel(curandStatePhilox4_32_10_t *globalState, int pop_size, int n_dim, float cross_prob,float mutation_prob, float* X_cuda, float* lb, float* ub, int block_size, int offset)
 {
-	int idx = offset*256 + blockIdx.x * blockDim.x + threadIdx.x;
+	int idx = offset*block_size + blockIdx.x * blockDim.x + threadIdx.x;
     //printf("%f\n",lb[1]);
     //random_first.x is selection index, random_first.y is cross prob,random_first.z is cross dimension, random_first.w is mutation prob
     float4 random_first = generate(globalState, idx);
@@ -191,7 +197,7 @@ __global__ void our_kernel(curandStatePhilox4_32_10_t *globalState, int pop_size
     // printf("idx: %d\n",idx);
     // printf("par_idx: %d\n",paraent_index);
     __syncthreads();
-    if(idx<block_size && abs(random_first.y) < cross_prob){
+    if(idx<pop_size && abs(random_first.y) < cross_prob){
         float child1, child2;
         float fitness_father = get_fitness_gpu(X_cuda,idx,n_dim);
         float fitness_mother = get_fitness_gpu(X_cuda,paraent_index,n_dim);
