@@ -23,3 +23,9 @@ You can use any cmake flags to build the project as long as it compiles. However
 cmake -DCMAKE_C_COMPILER=/usr/local/stow/gcc-9.2/bin/gcc -DCMAKE_CXX_COMPILER=/usr/local/stow/gcc-9.2/bin/g++ ..
 make -j4
 ```
+
+3. Run executable file
+```
+./mainGaSeq iteration pop_size cross_prob mutate_prob
+./GA_gpu iteration pop_size cross_prob mutate_prob
+```
