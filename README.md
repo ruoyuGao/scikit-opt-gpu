@@ -22,7 +22,7 @@ pip install scikit-opt
 ```
 2. Clone this repo and build it
 ```
-git clone git@github.com:ruoyuGao/scikit-opt-gpu.git
+git clone https://github.com/ruoyuGao/scikit-opt-gpu.git
 cd scikit-opt-gpu
 mkdir build
 cd build
