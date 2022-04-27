@@ -1,9 +1,6 @@
 # [scikit-opt-gpu](https://github.com/ruoyuGao/scikit-opt-gpu) 
 [![License](https://img.shields.io/pypi/l/scikit-opt.svg)](https://github.com/ruoyuGao/scikit-opt-gpu/blob/ruoyu_edit/LICENSE)
 ![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
-![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
-![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)
-![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white)
 ---
 
 ## Links
