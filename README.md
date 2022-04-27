@@ -9,7 +9,7 @@
 ![loc](https://img.shields.io/tokei/lines/github/ruoyuGao/scikit-opt-gpu?color=red)
 ![commit](https://img.shields.io/github/commit-activity/y/ruoyuGao/scikit-opt-gpu?color=red)
 ![lang](https://img.shields.io/github/languages/top/ruoyuGao/scikit-opt-gpu)
-![muzihuaner](https://komarev.com/ghpvc/?username=ruoyuGao)
+![](https://changkun.de/urlstat?mode=github&repo=ruoyuGao/scikit-opt-gpu)
 ---
 
 ## Links
