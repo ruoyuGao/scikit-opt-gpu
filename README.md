@@ -1,4 +1,4 @@
-# [scikit-opt-gpu](https://github.com/ruoyuGao/scikit-opt-gpu) <sup><sup><sub>5.1</sub></sup></sup></h1>
+# [scikit-opt-gpu](https://github.com/ruoyuGao/scikit-opt-gpu) 
 [![License](https://img.shields.io/pypi/l/scikit-opt.svg)](https://github.com/ruoyuGao/scikit-opt-gpu/blob/ruoyu_edit/LICENSE)
 ![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
 
