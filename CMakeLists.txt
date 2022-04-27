@@ -77,11 +77,13 @@ ENDMACRO(ADD_EXE)
 
 ADD_EXE(main)
 ADD_EXE(mainSA)
+ADD_EXE(mainACA_seq)
 IF(WITH_CUDA)
   ADD_EXE(mainCuda)
   ADD_EXE(mainGaSeq)
   ADD_EXE(GA_gpu)
   ADD_EXE(mainSACuda)
+  ADD_EXE(mainACA_cuda)
 ENDIF(WITH_CUDA)
 
 SET(CPACK_PROJECT_NAME ${PROJECT_NAME})
