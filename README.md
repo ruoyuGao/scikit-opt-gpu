@@ -1,6 +1,7 @@
 # [scikit-opt-gpu](https://github.com/ruoyuGao/scikit-opt-gpu) 
 [![License](https://img.shields.io/pypi/l/scikit-opt.svg)](https://github.com/ruoyuGao/scikit-opt-gpu/blob/ruoyu_edit/LICENSE)
 ![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
+![Cuda version](https://img.shields.io/badge/cuda-%3E%3D11.4-blue)
 ---
 
 ## Links
