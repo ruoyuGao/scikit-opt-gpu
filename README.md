@@ -43,6 +43,10 @@ make -j4
 ./mainSA num_of_initalSolutions maxOuterIteration maxInnerIteration verbose
 # SA cuda version
 ./mainSACuda num_of_initalSolutions maxOuterIteration maxInnerIteration verbose
+# ACA sequential version
+./mainACA_seq num_ants max_iters filename
+# ACA cuda version
+./mainACA_cuda num_ants max_iters filename
 ```
 
 
