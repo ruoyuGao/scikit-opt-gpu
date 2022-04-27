@@ -1,12 +1,14 @@
 # [scikit-opt-gpu](https://github.com/ruoyuGao/scikit-opt-gpu) 
 [![License](https://img.shields.io/pypi/l/scikit-opt.svg)](https://github.com/ruoyuGao/scikit-opt-gpu/blob/ruoyu_edit/LICENSE)
 ![Platform](https://img.shields.io/badge/platform-windows%20|%20linux%20|%20macos-green.svg)
+[![GitHub version](https://badge.fury.io/gh/ruoyuGao%2Fscikit-opt-gpu.svg)](https://badge.fury.io/gh/ruoyuGao%2Fscikit-opt-gpu)
 ![Cuda version](https://img.shields.io/badge/cuda-%3E%3D11.4-blue)
 ![Cmake version](https://img.shields.io/badge/cmake-%3E%3D3-blue)
 ![gcc version](https://img.shields.io/badge/gcc-%3E%3D9.2-blue)
 ![py version](https://img.shields.io/badge/python-%3E%3D3.7-blue)
 ![loc](https://img.shields.io/tokei/lines/github/ruoyuGao/scikit-opt-gpu?color=red)
-![loc](https://img.shields.io/github/commit-activity/y/ruoyuGao/scikit-opt-gpu?color=red)
+![commit](https://img.shields.io/github/commit-activity/y/ruoyuGao/scikit-opt-gpu?color=red)
+![lang](https://img.shields.io/github/languages/top/ruoyuGao/scikit-opt-gpu)
 ---
 
 ## Links
