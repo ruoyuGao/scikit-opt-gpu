@@ -8,7 +8,7 @@
 ![py version](https://img.shields.io/badge/python-%3E%3D3.7-blue)
 ![loc](https://img.shields.io/tokei/lines/github/ruoyuGao/scikit-opt-gpu?color=red)
 ![commit](https://img.shields.io/github/commit-activity/y/ruoyuGao/scikit-opt-gpu?color=red)
-![visitors](https://visitor-badge.deta.dev/badge?page_id=ruoyuGao.visitor-badge&left_color=grey&right_color=green)
+![visitors](https://visitor-badge.deta.dev/badge?page_id=ruoyuGao.visitor-badge&left_color=grey&right_color=red)
 ![lang](https://img.shields.io/github/languages/top/ruoyuGao/scikit-opt-gpu)
 ![](https://changkun.de/urlstat?mode=github&repo=ruoyuGao/scikit-opt-gpu)
 ---
