@@ -6,6 +6,7 @@
 ![gcc version](https://img.shields.io/badge/gcc-%3E%3D9.2-blue)
 ![py version](https://img.shields.io/badge/python-%3E%3D3.7-blue)
 ![loc](https://img.shields.io/tokei/lines/github/ruoyuGao/scikit-opt-gpu?color=red)
+![loc](https://img.shields.io/github/commit-activity/y/ruoyuGao/scikit-opt-gpu?color=red)
 ---
 
 ## Links
