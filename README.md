@@ -15,6 +15,8 @@
 
 ## Links
 test_file(ACA) → [link](https://drive.google.com/file/d/1rAmWo6g4f0wc2BRm5pEV6hzi79XltjE7/view?usp=sharing)
+
+Our report(Fixed some typo mistakes) → [link](https://drive.google.com/file/d/1ZzQMT0i0NUCjwxwv4DPrxtFA0IX3w6nF/view?usp=sharing)
 ## Usage
 1. Load gcc 9.2 and git 2.6 from CIMS cluster
 ```
