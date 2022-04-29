@@ -6,7 +6,8 @@
 ![Cmake version](https://img.shields.io/badge/cmake-%3E%3D3-blue)
 ![gcc version](https://img.shields.io/badge/gcc-%3E%3D9.2-blue)
 ![py version](https://img.shields.io/badge/python-%3E%3D3.7-blue)
-![loc](https://img.shields.io/tokei/lines/github/ruoyuGao/scikit-opt-gpu?color=red)
+<!--![loc](https://img.shields.io/tokei/lines/github/ruoyuGao/scikit-opt-gpu?color=red)-->
+![loc](https://img.shields.io/badge/total%20lines-5k-red)
 ![commit](https://img.shields.io/github/commit-activity/y/ruoyuGao/scikit-opt-gpu?color=red)
 ![visitors](https://visitor-badge.deta.dev/badge?page_id=ruoyuGao.visitor-badge&left_color=grey&right_color=red)
 ![lang](https://img.shields.io/github/languages/top/ruoyuGao/scikit-opt-gpu)
